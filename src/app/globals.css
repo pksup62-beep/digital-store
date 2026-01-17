@@ -1,27 +1,21 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+  /* HSL Color Palette - Modern Dark Theme */
+  --background: 240 10% 4%;
+  /* Almost Black */
+  --foreground: 0 0% 98%;
+  /* White */
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+  --primary: 265 89% 66%;
+  /* Vibrant Purple */
+  --secondary: 190 100% 50%;
+  /* Cyan/Neon Blue */
+  --accent: 320 100% 60%;
+  /* Hot Pink */
 
-html,
-body {
-  max-width: 100vw;
-  overflow-x: hidden;
-}
+  --card-bg: 240 10% 8%;
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  --container-width: 1200px;
+  --header-height: 4rem;
 }
 
 * {
@@ -30,13 +24,322 @@ body {
   margin: 0;
 }
 
+html,
+body {
+  max-width: 100vw;
+  overflow-x: hidden;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: 'Inter', system-ui, sans-serif;
+  line-height: 1.6;
+}
+
 a {
   color: inherit;
   text-decoration: none;
+  transition: color 0.2s;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
+/* Layout Utilities */
+.container {
+  max-width: var(--container-width);
+  margin: 0 auto;
+  padding: 0 1.5rem;
+}
+
+.section-padding {
+  padding: 5rem 0;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4 {
+  line-height: 1.2;
+  margin-bottom: 1rem;
+}
+
+h1 {
+  font-size: clamp(2.5rem, 5vw, 4.5rem);
+}
+
+h2 {
+  font-size: clamp(2rem, 4vw, 3rem);
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+p {
+  color: #a1a1aa;
+  margin-bottom: 1.5rem;
+}
+
+/* Effects */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+.gradient-text {
+  background: linear-gradient(to right, hsl(var(--primary)), hsl(var(--secondary)));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  width: fit-content;
+}
+
+/* Header Styles */
+.site-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: var(--header-height);
+  z-index: 1000;
+  background: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 100%;
+}
+
+.nav-links {
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+}
+
+.btn-glass {
+  padding: 0.5rem 1.25rem;
+  border-radius: 99px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: white;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-glass:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Hero Section */
+.hero-section {
+  min-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  padding-top: var(--header-height);
+}
+
+.hero-glow {
+  position: absolute;
+  width: 500px;
+  height: 500px;
+  border-radius: 50%;
+  filter: blur(100px);
+  opacity: 0.2;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.glow-left {
+  background: hsl(var(--primary));
+  top: 10%;
+  left: -10%;
+}
+
+.glow-right {
+  background: hsl(var(--secondary));
+  bottom: 10%;
+  right: -10%;
+}
+
+.btn-primary {
+  display: inline-block;
+  padding: 1rem 2.5rem;
+  background: white;
+  color: black;
+  border-radius: 99px;
+  font-weight: 700;
+  font-size: 1.1rem;
+  transition: transform 0.2s, background-color 0.2s;
+  border: none;
+  cursor: pointer;
+}
+
+.btn-primary:hover {
+  background: #e2e2e2;
+  transform: scale(1.05);
+}
+
+/* Products Grid */
+.products-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 2rem;
+  margin-top: 3rem;
+}
+
+.product-card {
+  border-radius: 1rem;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: transform 0.3s;
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.card-image {
+  aspect-ratio: 16/9;
+  background: #2a2a2a;
+  overflow: hidden;
+  position: relative;
+}
+
+.card-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s;
+}
+
+.product-card:hover .card-image img {
+  transform: scale(1.05);
+}
+
+.card-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.card-footer {
+  margin-top: auto;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Product Details Page */
+.product-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  gap: 3rem;
+  padding-top: calc(var(--header-height) + 2rem);
+}
+
+@media (max-width: 900px) {
+  .product-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%;
+  /* 16:9 */
+  background: black;
+  border-radius: 1rem;
+  overflow: hidden;
+  margin-bottom: 2rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.video-wrapper iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.checkout-card {
+  position: sticky;
+  top: calc(var(--header-height) + 2rem);
+  padding: 2rem;
+  border-radius: 1.5rem;
+}
+
+.price-tag {
+  font-size: 3rem;
+  font-weight: 700;
+  color: hsl(var(--primary));
+  line-height: 1;
+  margin: 0.5rem 0 2rem;
+}
+
+.feature-list {
+  list-style: none;
+  margin-bottom: 2rem;
+}
+
+.feature-list li {
+  display: flex;
+  gap: 0.75rem;
+  margin-bottom: 0.75rem;
+  color: #ccc;
+}
+
+.btn-full {
+  width: 100%;
+  text-align: center;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 2000;
+  background: rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+
+.modal-content {
+  width: 100%;
+  max-width: 480px;
+  padding: 2.5rem;
+  border-radius: 1.5rem;
+  position: relative;
+  animation: zoomIn 0.3s ease;
+}
+
+@keyframes zoomIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1);
   }
 }

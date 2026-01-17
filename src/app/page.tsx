@@ -1,66 +1,69 @@
-import Image from "next/image";
-import styles from "./page.module.css";
 
-export default function Home() {
+import Hero from '@/components/Hero';
+import ProductCard from '@/components/ProductCard';
+import { prisma } from '@/lib/prisma';
+import SearchFilter from '@/components/SearchFilter';
+
+export const dynamic = 'force-dynamic';
+
+export default async function Home({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
+  const resolvedParams = await searchParams; // Next.js 15+ needs await
+  const category = resolvedParams?.category as string;
+  const search = resolvedParams?.search as string;
+
+  const where: any = {};
+
+  if (category && category !== 'All') {
+    where.category = category;
+  }
+
+  if (search) {
+    where.OR = [
+      { title: { contains: search } }, // SQLite is case-insensitive by default in many cases, but normally mode: 'insensitive' needed for Postgres
+      { description: { contains: search } }
+    ];
+  }
+
+  // Fetch products from database
+  const products = await prisma.product.findMany({
+    where,
+    orderBy: { createdAt: 'desc' }
+  });
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className={styles.intro}>
-          <h1>To get started, edit the page.tsx file.</h1>
-          <p>
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main>
+      <Hero />
+
+      <section id="courses" className="section-padding">
+        <div className="container">
+          <div style={{ marginBottom: '2rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '1.5rem' }}>
+              <h2>Featured Courses</h2>
+              <div style={{ height: '1px', background: 'rgba(255,255,255,0.1)', flex: 1, marginLeft: '2rem' }} />
+            </div>
+
+            {/* Search & Filter Component */}
+            <SearchFilter />
+          </div>
+
+          <div className="products-grid">
+            {products.length > 0 ? (
+              products.map((product) => (
+                <ProductCard key={product.id} product={product as any} />
+              ))
+            ) : (
+              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '4rem', color: '#666' }}>
+                <p style={{ fontSize: '1.2rem', marginBottom: '1rem' }}>No courses found</p>
+                <p>Try adjusting your search or filter.</p>
+              </div>
+            )}
+          </div>
         </div>
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className={styles.secondary}
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </section>
+
+      <footer style={{ borderTop: '1px solid rgba(255,255,255,0.1)', padding: '2.5rem 0', textAlign: 'center', color: '#666', fontSize: '0.875rem' }}>
+        <p>© 2026 DigitalStore. All rights reserved.</p>
+      </footer>
+    </main>
   );
 }
