@@ -5,8 +5,25 @@ import './globals.css';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'DigitalStore - Premium Courses & Assets',
+  title: {
+    template: '%s | Digital Store',
+    default: 'Digital Store - Premium Courses & Assets',
+  },
   description: 'Buy premium courses and digital assets with ease.',
+  openGraph: {
+    type: 'website',
+    locale: 'en_US',
+    url: 'https://digital-store.vercel.app', // Update with actual Vercel URL if known
+    siteName: 'Digital Store',
+    images: [
+      {
+        url: '/api/og', // We can add a default OG image generator later or use a static one
+        width: 1200,
+        height: 630,
+        alt: 'Digital Store',
+      },
+    ],
+  },
 };
 
 import Header from '@/components/Header';

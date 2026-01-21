@@ -45,7 +45,7 @@ export async function POST(req: Request) {
         // Check if order already exists (optional idempotency)
         // For now, allow multiple buys or simple create.
 
-        await prisma.order.create({
+        const order = await prisma.order.create({
             data: {
                 userId: session.user.id,
                 productId: productId,
@@ -54,6 +54,29 @@ export async function POST(req: Request) {
                 transactionId: razorpay_payment_id
             }
         });
+
+        // Send Email Receipt (Async - don't block response)
+        const origin = new URL(req.url).origin;
+        const productUrl = `${origin}/product/${productId}`;
+
+        // We use setImmediate or just don't await strictly to speed up response, 
+        // but Vercel serverless might kill process. Safe to await or use waitUntil if available (Next 15+ has after/waitUntil).
+        // For standard Next App Router, await is safest to ensure delivery.
+        try {
+            if (session.user.email) {
+                const { sendReceiptEmail } = await import('@/lib/mail');
+                await sendReceiptEmail({
+                    email: session.user.email,
+                    orderId: order.id,
+                    productName: product.title,
+                    amount: product.price,
+                    date: new Date().toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' }),
+                    productUrl
+                });
+            }
+        } catch (emailError) {
+            console.error('Email sending failed (non-blocking):', emailError);
+        }
 
         return NextResponse.json({ success: true });
     } catch (error: any) {

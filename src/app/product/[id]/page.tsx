@@ -1,10 +1,40 @@
 import { auth } from '@/auth';
 import { notFound, redirect } from 'next/navigation';
+import { Metadata } from 'next';
 
 import VideoPlayer from '@/components/VideoPlayer';
 import PaymentModal from '@/components/PaymentModal';
 import { prisma } from '@/lib/prisma';
 import ProductPageClient from './client';
+
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+    const { id } = await params;
+    const product = await prisma.product.findUnique({ where: { id } });
+
+    if (!product) {
+        return {
+            title: 'Product Not Found',
+        };
+    }
+
+    return {
+        title: product.title,
+        description: product.description.substring(0, 160), // standard SEO length
+        openGraph: {
+            title: product.title,
+            description: product.description,
+            images: [
+                {
+                    url: product.thumbnail,
+                    width: 1200,
+                    height: 630,
+                    alt: product.title,
+                }
+            ],
+            type: 'website',
+        },
+    };
+}
 
 export default async function ProductPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
