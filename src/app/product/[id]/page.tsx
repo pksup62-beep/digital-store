@@ -55,7 +55,7 @@ export default async function ProductPage({ params }: { params: Promise<{ id: st
             where: {
                 userId: session.user.id,
                 productId: id,
-                status: 'SUCCESS'
+                status: 'COMPLETED'
             }
         });
         if (order) isPurchased = true;

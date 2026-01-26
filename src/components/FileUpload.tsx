@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { UploadButton } from '@/utils/uploadthing';
+import Swal from 'sweetalert2';
 import "@uploadthing/react/styles.css";
 
 interface FileUploadProps {
@@ -36,7 +37,11 @@ export default function FileUpload({ label, accept, onUploadComplete, currentVal
             onUploadComplete(data.url); // Pass URL back to parent form
         } catch (error) {
             console.error('Upload error:', error);
-            alert('Failed to upload file');
+            Swal.fire({
+                title: 'Error',
+                text: 'Failed to upload file',
+                icon: 'error'
+            });
         } finally {
             setIsUploading(false);
         }
@@ -54,12 +59,22 @@ export default function FileUpload({ label, accept, onUploadComplete, currentVal
                             const url = res[0].url;
                             setPreview(url);
                             onUploadComplete(url);
-                            alert("Upload Completed");
+                            Swal.fire({
+                                title: 'Success',
+                                text: 'Upload Completed',
+                                icon: 'success',
+                                timer: 2000,
+                                showConfirmButton: false
+                            });
                         }
                     }}
                     onUploadError={(error: Error) => {
                         // Do something with the error.
-                        alert(`ERROR! ${error.message}`);
+                        Swal.fire({
+                            title: 'Error',
+                            text: error.message,
+                            icon: 'error'
+                        });
                     }}
                 />
             </div>

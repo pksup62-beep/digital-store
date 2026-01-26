@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import VideoPlayer from '@/components/VideoPlayer';
+import Swal from 'sweetalert2';
 
 // Helper to load Razorpay script
 const loadRazorpay = () => {
@@ -48,7 +49,11 @@ export default function ProductPageClient({ product, isPurchased: initialIsPurch
                 setIsPurchased(true);
                 router.refresh();
             } catch (err) {
-                alert('Something went wrong');
+                Swal.fire({
+                    title: 'Error',
+                    text: 'Something went wrong while claiming the free course.',
+                    icon: 'error'
+                });
             } finally {
                 setIsLoading(false);
             }
@@ -99,9 +104,20 @@ export default function ProductPageClient({ product, isPurchased: initialIsPurch
 
                         setIsPurchased(true);
                         router.refresh();
-                        alert('Payment Successful! Course Added.');
+                        Swal.fire({
+                            title: 'Success!',
+                            text: 'Payment Successful! Course Added.',
+                            icon: 'success',
+                            confirmButtonText: 'Great!',
+                            confirmButtonColor: '#22c55e'
+                        });
                     } catch (err: any) {
-                        alert(err.message || 'Payment verification failed');
+                        Swal.fire({
+                            title: 'Error',
+                            text: err.message || 'Payment verification failed',
+                            icon: 'error',
+                            confirmButtonColor: '#ef4444'
+                        });
                     }
                 },
                 prefill: {
@@ -118,7 +134,12 @@ export default function ProductPageClient({ product, isPurchased: initialIsPurch
 
         } catch (error: any) {
             console.error('Payment Error:', error);
-            alert(error.message || 'Payment failed');
+            Swal.fire({
+                title: 'Error',
+                text: error.message || 'Payment failed',
+                icon: 'error',
+                confirmButtonColor: '#ef4444'
+            });
         } finally {
             setIsLoading(false);
         }

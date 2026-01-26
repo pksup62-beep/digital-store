@@ -14,7 +14,7 @@ export default async function MyCourses() {
     const orders = await prisma.order.findMany({
         where: {
             userId: session.user.id,
-            status: 'SUCCESS'
+            status: 'COMPLETED'
         },
         include: { product: true }
     });
